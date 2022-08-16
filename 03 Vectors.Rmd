@@ -1,0 +1,164 @@
+---
+title: "03 Vectors"
+output: html_document
+date: '2022-08-07'
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## 3.1 Introduction
+
+Two flavours: atomic vectors and lists
+Atomic: all elements must have the same type
+NULL: generic zero length vector
+
+Vector attributes
+- *dimension* turns vectors into matrices and arrays
+- *class* powers the S3 object system
+
+## 3.2 Atomic vectors
+
+Four primary types: logical, integer, double and character
+Two rare types: complex and raw
+
+### 3.2.1 Scalars
+
+Each of the four primary types has a *scalar*: a special syntax to create an individual value
+- Logicals (`TRUE` or `FALSE`)
+- Doubles: decimal (`0.1234`), scientific (`1.234e4`) or hexadecimal (`0xcafe`). Special values are `-Inf`, `Inf` and `NaN`
+- Integer: must be followed by `L` (`1234L`)
+- Strings surrounded by `"` or `'`
+
+### 3.2.2 Making longer vectors with `c()`
+
+Use `c()`, short for combine
+```{r making longer vectors with c()}
+lgl_var <- c(TRUE, FALSE)
+int_var <- c(1L, 6L, 10L)
+dbl_var <- c(1, 2.5, 4.5)
+chr_var <- c("these are", "some strings")
+```
+
+When the inputs are atomic vectors the output is an atomic vector
+```{r inputs = atomic, output = atomic}
+c(c(1, 2), c(3, 4))
+```
+Determine the type of a vector with `typeof()` and length with `length()`
+```{r determine the type and length of a vector}
+typeof(lgl_var)
+typeof(int_var)
+typeof(dbl_var)
+typeof(chr_var)
+
+length(lgl_var)
+```
+
+### 3.2.3 Missing values
+
+Missing values tend to be infectious
+
+```{r missing values tend to be infectious}
+NA > 5
+10 * NA
+!NA
+```
+
+There are a few exceptions
+
+```{r missing value exceptions}
+NA ^ 0
+NA | TRUE
+NA & FALSE
+```
+
+A common mistake when determining if values in a vector are missing
+```{r common mistake when determining missing values in a vector}
+x <- c(NA, 5, NA, 10)
+x == NA
+
+# instead use is.na()
+is.na(x)
+```
+
+### 3.2.4 Testing and coercion
+
+You can *test* if a function is a given type using `is.*()` functions
+
+When you attempt to combine different vector types they will be *coerced* in a fixed order: character → double → integer → logical
+
+```{r combining a character and an integer yields a character}
+str(c("a", 1))
+```
+
+Coercion often happens automatically
+```{r coercion often happens automatically}
+x <- c(FALSE, FALSE, TRUE)
+as.numeric(x)
+
+# Total number of TRUEs
+sum(x)
+
+# Proportion that are TRUE
+mean(x)
+```
+
+Generally you can deliberately coerce using an `as.*()` function
+```{r deliberate coerce using as.integer()}
+as.integer(c("1", "1.5", "a"))
+```
+
+### 3.2.5 Exercises
+
+1. How do you create raw and complex scalars? (See `?raw` and `?complex`.)
+```{r 3.2.5 Exercise 1}
+# raw() creates a raw vector of specified length
+raw(3)
+
+# as.raw() attempts to coerce an argument to be of raw type
+as.raw(10)
+
+# complex() creates a complex vectors
+complex(3)  # specified length generates a vector of complex zeroes
+complex(real = 2, imaginary = 0.5)
+complex(modulus = sqrt(8), argument = pi / 4)
+
+# as.complex() attempts to coerce an argument to be of complex type
+as.complex(10)
+```
+
+
+2. Test your knowledge of the vector coercion rules by predicting the output of the following uses of c():
+
+`c(1, FALSE)`
+`c("a", 1)`
+`c(TRUE, 1L)`
+
+3. Why is `1 == "1"` true? Why is `-1 < FALSE` true? Why is `"one" < 2` false?
+
+4. Why is the default missing value, `NA`, a logical vector? What’s special about logical vectors? (Hint: think about `c(FALSE, NA_character_)`.)
+
+5. Precisely what do `is.atomic()`, `is.numeric()`, and `is.vector()` test for?
